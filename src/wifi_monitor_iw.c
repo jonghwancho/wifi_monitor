@@ -11,7 +11,7 @@
 
 /***************************** INCLUDES *****************************/
 
-#include "iw_lib-private.h"        /* Private header */
+#include "wifi_monitor_iw.h"        /* Private header */
 
 /************************ CONSTANTS & MACROS ************************/
 
@@ -2962,7 +2962,7 @@ realloc:
     if(wrq.u.data.length) {
         struct iw_event        iwe;
         struct stream_descr    stream;
-        struct wireless_scan *    wscan = NULL;
+        struct wireless_scan * wscan = NULL;
         int            ret;
 #ifdef DEBUG
         /* Debugging code. In theory useless, because it's debugged ;-) */

@@ -12,7 +12,7 @@
  */
 
 //#include "iw_lib-private.h"        /* Private header */
-#include <iw_list.h>
+#include <wifi_monitor_iw_list.h>
 #include <sys/time.h>
 
 /****************************** TYPES ******************************/
@@ -38,17 +38,17 @@ typedef struct iwmask_name {
  * Types of authentication parameters
  */
 typedef struct iw_auth_descr {
-    int                value;        /* Type of auth value */
-    const char *            label;        /* User readable version */
-    const struct iwmask_name *    names;        /* Names for this value */
-    const int            num_names;    /* Number of names */
+    int                         value;        /* Type of auth value */
+    const char *                label;        /* User readable version */
+    const struct iwmask_name *  names;        /* Names for this value */
+    const int                   num_names;    /* Number of names */
 } iw_auth_descr;
 
 /**************************** CONSTANTS ****************************/
 
 #define IW_SCAN_HACK        0x8000
 
-#define IW_EXTKEY_SIZE    (sizeof(struct iw_encode_ext) + IW_ENCODING_TOKEN_MAX)
+#define IW_EXTKEY_SIZE      (sizeof(struct iw_encode_ext) + IW_ENCODING_TOKEN_MAX)
 
 /* ------------------------ WPA CAPA NAMES ------------------------ */
 /*
@@ -67,38 +67,39 @@ typedef struct iw_auth_descr {
 
 static const struct iwmask_name iw_auth_capa_name[] = {
     { IW_ENC_CAPA_WPA,            "WPA" },
-    { IW_ENC_CAPA_WPA2,            "WPA2" },
+    { IW_ENC_CAPA_WPA2,           "WPA2" },
     { IW_ENC_CAPA_CIPHER_TKIP,    "CIPHER-TKIP" },
     { IW_ENC_CAPA_CIPHER_CCMP,    "CIPHER-CCMP" },
 };
+
 #define    IW_AUTH_CAPA_NUM    IW_ARRAY_LEN(iw_auth_capa_name)
 
 static const struct iwmask_name iw_auth_cypher_name[] = {
     { IW_AUTH_CIPHER_NONE,        "none" },
-    { IW_AUTH_CIPHER_WEP40,        "WEP-40" },
+    { IW_AUTH_CIPHER_WEP40,       "WEP-40" },
     { IW_AUTH_CIPHER_TKIP,        "TKIP" },
     { IW_AUTH_CIPHER_CCMP,        "CCMP" },
-    { IW_AUTH_CIPHER_WEP104,    "WEP-104" },
+    { IW_AUTH_CIPHER_WEP104,      "WEP-104" },
 };
 #define    IW_AUTH_CYPHER_NUM    IW_ARRAY_LEN(iw_auth_cypher_name)
 
 static const struct iwmask_name iw_wpa_ver_name[] = {
     { IW_AUTH_WPA_VERSION_DISABLED,    "disabled" },
-    { IW_AUTH_WPA_VERSION_WPA,        "WPA" },
+    { IW_AUTH_WPA_VERSION_WPA,         "WPA" },
     { IW_AUTH_WPA_VERSION_WPA2,        "WPA2" },
 };
 #define    IW_WPA_VER_NUM        IW_ARRAY_LEN(iw_wpa_ver_name)
 
 static const struct iwmask_name iw_auth_key_mgmt_name[] = {
     { IW_AUTH_KEY_MGMT_802_1X,    "802.1x" },
-    { IW_AUTH_KEY_MGMT_PSK,        "PSK" },
+    { IW_AUTH_KEY_MGMT_PSK,       "PSK" },
 };
 #define    IW_AUTH_KEY_MGMT_NUM    IW_ARRAY_LEN(iw_auth_key_mgmt_name)
 
 static const struct iwmask_name iw_auth_alg_name[] = {
     { IW_AUTH_ALG_OPEN_SYSTEM,    "open" },
-    { IW_AUTH_ALG_SHARED_KEY,    "shared-key" },
-    { IW_AUTH_ALG_LEAP,            "LEAP" },
+    { IW_AUTH_ALG_SHARED_KEY,     "shared-key" },
+    { IW_AUTH_ALG_LEAP,           "LEAP" },
 };
 #define    IW_AUTH_ALG_NUM        IW_ARRAY_LEN(iw_auth_alg_name)
 
@@ -128,16 +129,16 @@ static const char *    iw_encode_alg_name[] = {
 
 #ifndef IW_IE_CIPHER_NONE
 /* Cypher values in GENIE (pairwise and group) */
-#define IW_IE_CIPHER_NONE    0
-#define IW_IE_CIPHER_WEP40    1
-#define IW_IE_CIPHER_TKIP    2
-#define IW_IE_CIPHER_WRAP    3
-#define IW_IE_CIPHER_CCMP    4
-#define IW_IE_CIPHER_WEP104    5
+#define IW_IE_CIPHER_NONE       0
+#define IW_IE_CIPHER_WEP40      1
+#define IW_IE_CIPHER_TKIP       2
+#define IW_IE_CIPHER_WRAP       3
+#define IW_IE_CIPHER_CCMP       4
+#define IW_IE_CIPHER_WEP104     5
 /* Key management in GENIE */
-#define IW_IE_KEY_MGMT_NONE    0
-#define IW_IE_KEY_MGMT_802_1X    1
-#define IW_IE_KEY_MGMT_PSK    2
+#define IW_IE_KEY_MGMT_NONE     0
+#define IW_IE_KEY_MGMT_802_1X   1
+#define IW_IE_KEY_MGMT_PSK      2
 #endif    /* IW_IE_CIPHER_NONE */
 
 /* Values for the IW_IE_CIPHER_* in GENIE */
@@ -172,7 +173,7 @@ static const char *    iw_ie_key_mgmt_name[] = {
 static void
 iw_print_mask_name(unsigned int                mask,
                    const struct iwmask_name    names[],
-                   const unsigned int        num_names,
+                   const unsigned int          num_names,
                    const char *                sep)
 {
     unsigned int    i;
@@ -199,7 +200,7 @@ iw_print_mask_name(unsigned int                mask,
 static void
 iw_print_value_name(unsigned int        value,
                     const char *        names[],
-                    const unsigned int    num_names)
+                    const unsigned int  num_names)
 {
     if(value >= num_names)
         printf(" unknown (%d)", value);
@@ -223,6 +224,7 @@ iw_print_ie_unknown(unsigned char *    iebuf,
         ielen = buflen;
 
     printf("Unknown: ");
+
     for(i = 0; i < ielen; i++)
         printf("%02X", iebuf[i]);
     printf("\n");
@@ -239,10 +241,10 @@ iw_print_ie_wpa(unsigned char *    iebuf,
 {
     int                 ielen = iebuf[1] + 2;
     int                 offset = 2;    /* Skip the IE id, and the length. */
-    unsigned char        wpa1_oui[3] = {0x00, 0x50, 0xf2};
-    unsigned char        wpa2_oui[3] = {0x00, 0x0f, 0xac};
-    unsigned char *        wpa_oui;
-    int                    i;
+    unsigned char       wpa1_oui[3] = {0x00, 0x50, 0xf2};
+    unsigned char       wpa2_oui[3] = {0x00, 0x0f, 0xac};
+    unsigned char *     wpa_oui;
+    int                 i;
     uint16_t            ver = 0;
     uint16_t            cnt = 0;
 
@@ -261,6 +263,7 @@ iw_print_ie_wpa(unsigned char *    iebuf,
         case 0x30:        /* WPA2 */
             /* Check if we have enough data */
             if(ielen < 4) {
+
                 iw_print_ie_unknown(iebuf, buflen);
                 return;
             }
@@ -276,6 +279,7 @@ iw_print_ie_wpa(unsigned char *    iebuf,
             if((ielen < 8) ||
                (memcmp(&iebuf[offset], wpa_oui, 3) != 0) ||
                (iebuf[offset + 3] != 0x01)) {
+
                 iw_print_ie_unknown(iebuf, buflen);
                 return;
             }
@@ -292,10 +296,8 @@ iw_print_ie_wpa(unsigned char *    iebuf,
     ver = iebuf[offset] | (iebuf[offset + 1] << 8);
     offset += 2;
 
-    if(iebuf[0] == 0xdd)
-        printf("WPA Version %d\n", ver);
-    if(iebuf[0] == 0x30)
-        printf("IEEE 802.11i/WPA2 Version %d\n", ver);
+    if(iebuf[0] == 0xdd) printf("WPA Version %d\n", ver);
+    if(iebuf[0] == 0x30) printf("IEEE 802.11i/WPA2 Version %d\n", ver);
 
     /* From here, everything is technically optional. */
 
@@ -313,8 +315,7 @@ iw_print_ie_wpa(unsigned char *    iebuf,
     }
     else {
         printf("                        Group Cipher :");
-        iw_print_value_name(iebuf[offset+3],
-                iw_ie_cypher_name, IW_IE_CYPHER_NUM);
+        iw_print_value_name(iebuf[offset+3], iw_ie_cypher_name, IW_IE_CYPHER_NUM);
         printf("\n");
     }
     offset += 4;
@@ -434,7 +435,7 @@ print_scanning_token(struct stream_descr *    stream,    /* Stream of events */
                      struct iw_event *        event,    /* Extracted token */
                      struct iwscan_state *    state,
                      struct iw_range *        iw_range,    /* Range info */
-                     int                    has_range)
+                     int                      has_range)
 {
 
     char        buffer[128];    /* Temporary buffer */
@@ -591,21 +592,21 @@ print_scanning_token(struct stream_descr *    stream,    /* Stream of events */
  */
 static int
 print_scanning_info(int        skfd,
-                    char *    ifname,
-                    char *    args[],                        /* Command line args */
+                    char *     ifname,
+                    char *     args[],                       /* Command line args */
                     int        count)                        /* Args count */
 {
-    struct      iwreq            wrq;
-    struct      iw_scan_req     scanopt;                /* Options for 'set' */
+    struct      iwreq           wrq;
+    struct      iw_scan_req     scanopt;                    /* Options for 'set' */
     struct      iw_range        range;
 
-    int                            scanflags = 0;            /* Flags for scan */
-    unsigned char *                buffer = NULL;            /* Results */
-    int                            buflen = IW_SCAN_MAX_DATA; /* Min for compat WE<17 */
-    int                            has_range;
+    int                         scanflags = 0;              /* Flags for scan */
+    unsigned char *             buffer = NULL;              /* Results */
+    int                         buflen = IW_SCAN_MAX_DATA;  /* Min for compat WE<17 */
+    int                         has_range;
 
-    struct      timeval            tv;                        /* Select timeout */
-    int                            timeout = 15000000;        /* 15s */
+    struct      timeval         tv;                         /* Select timeout */
+    int                         timeout = 15000000;         /* 15s */
 
     /* Avoid "Unused parameter" warning */
     args = args; count = count;
@@ -683,13 +684,13 @@ print_scanning_info(int        skfd,
     /* Check if we have scan options */
     if(scanflags) {
         wrq.u.data.pointer = (caddr_t) &scanopt;
-        wrq.u.data.length = sizeof(scanopt);
-        wrq.u.data.flags = scanflags;
+        wrq.u.data.length  = sizeof(scanopt);
+        wrq.u.data.flags   = scanflags;
     }
     else {
         wrq.u.data.pointer = NULL;
-        wrq.u.data.flags = 0;
-        wrq.u.data.length = 0;
+        wrq.u.data.flags   = 0;
+        wrq.u.data.length  = 0;
     }
 
     /* If only 'last' was specified on command line, don't trigger a scan */
@@ -697,13 +698,11 @@ print_scanning_info(int        skfd,
         /* Skip waiting */
         tv.tv_usec = 0;
     }
-    else
-    {
+    else {
         /* Initiate Scanning */
-        if(iw_set_ext(skfd, ifname, SIOCSIWSCAN, &wrq) < 0)
-        {
-            if((errno != EPERM) || (scanflags != 0))
-            {
+        if(iw_set_ext(skfd, ifname, SIOCSIWSCAN, &wrq) < 0) {
+
+            if((errno != EPERM) || (scanflags != 0)) {
                 fprintf(stderr, "%-8.16s  Interface doesn't support scanning : %s\n\n",
                         ifname, strerror(errno));
                 return(-1);
@@ -718,11 +717,12 @@ print_scanning_info(int        skfd,
             tv.tv_usec = 0;
         }
     }
+
     timeout -= tv.tv_usec;
 
     /* Forever */
     while(1) {
-        fd_set        rfds;        /* File descriptors for select */
+        fd_set         rfds;       /* File descriptors for select */
         int            last_fd;    /* Last fd */
         int            ret;
 
@@ -854,16 +854,16 @@ realloc:
  * Print the number of channels and available frequency for the device
  */
 static int
-print_freq_info(int        skfd,
+print_freq_info(int       skfd,
                 char *    ifname,
                 char *    args[],        /* Command line args */
-                int        count)        /* Args count */
+                int       count)         /* Args count */
 {
     struct iwreq        wrq;
-    struct iw_range        range;
-    double                freq;
-    int                    k;
-    int                    channel;
+    struct iw_range     range;
+    double              freq;
+    int                 k;
+    int                 channel;
     char                buffer[128];    /* Temporary buffer */
 
     /* Avoid "Unused parameter" warning */
@@ -876,6 +876,7 @@ print_freq_info(int        skfd,
         if(range.num_frequency > 0) {
             printf("%-8.16s  %d channels in total; available frequencies :\n",
                     ifname, range.num_channels);
+
             /* Print them all */
             for(k = 0; k < range.num_frequency; k++) {
                 freq = iw_freq2float(&(range.freq[k]));
@@ -904,14 +905,14 @@ print_freq_info(int        skfd,
  * Print the number of available bitrates for the device
  */
 static int
-print_bitrate_info(int        skfd,
+print_bitrate_info(int       skfd,
                    char *    ifname,
                    char *    args[],        /* Command line args */
-                   int        count)        /* Args count */
+                   int       count)        /* Args count */
 {
     struct iwreq        wrq;
-    struct iw_range        range;
-    int                    k;
+    struct iw_range     range;
+    int                 k;
     char                buffer[128];
 
     /* Avoid "Unused parameter" warning */
@@ -960,14 +961,14 @@ print_bitrate_info(int        skfd,
  * Print all the available encryption keys for the device
  */
 static int
-print_keys_info(int        skfd,
+print_keys_info(int       skfd,
                 char *    ifname,
                 char *    args[],        /* Command line args */
-                int        count)        /* Args count */
+                int       count)        /* Args count */
 {
     struct iwreq        wrq;
-    struct iw_range        range;
-    unsigned char        key[IW_ENCODING_TOKEN_MAX];
+    struct iw_range     range;
+    unsigned char       key[IW_ENCODING_TOKEN_MAX];
     unsigned int        k;
     char                buffer[128];
 
@@ -979,6 +980,7 @@ print_keys_info(int        skfd,
         fprintf(stderr, "%-8.16s  no encryption keys information.\n\n", ifname);
     else {
         printf("%-8.16s  ", ifname);
+
         /* Print key sizes */
         if( (range.num_encoding_sizes > 0) &&
             (range.num_encoding_sizes < IW_MAX_ENCODING_SIZES) ) {
@@ -1039,13 +1041,13 @@ print_keys_info(int        skfd,
  * Print Power Management info for each device
  */
 static int
-get_pm_value(int        skfd,
+get_pm_value(int          skfd,
         char *            ifname,
         struct iwreq *    pwrq,
-        int                flags,
+        int               flags,
         char *            buffer,
-        int                buflen,
-        int                we_version_compiled)
+        int               buflen,
+        int               we_version_compiled)
 {
     /* Get Another Power Management value */
     pwrq->u.power.flags = flags;
@@ -1064,12 +1066,12 @@ get_pm_value(int        skfd,
  * Print Power Management range for each type
  */
 static void
-print_pm_value_range(char *        name,
+print_pm_value_range(char *     name,
                      int        mask,
                      int        iwr_flags,
                      int        iwr_min,
                      int        iwr_max,
-                     char *        buffer,
+                     char *     buffer,
                      int        buflen,
                      int        we_version_compiled)
 {
@@ -1103,13 +1105,13 @@ static const int pm_type_flags_size = (sizeof(pm_type_flags)/sizeof(pm_type_flag
  * Print Power Management info for each device
  */
 static int
-print_pm_info(int        skfd,
+print_pm_info(int       skfd,
               char *    ifname,
               char *    args[],        /* Command line args */
-              int        count)        /* Args count */
+              int       count)        /* Args count */
 {
     struct iwreq        wrq;
-    struct iw_range        range;
+    struct iw_range     range;
     char                buffer[128];
 
     /* Avoid "Unused parameter" warning */
@@ -1183,12 +1185,13 @@ print_pm_info(int        skfd,
                 while(1) {
                     /* Deal with min/max for the current value */
                     pm_mask = 0;
+
                     /* If we have been returned a MIN value, ask for the MAX */
-                    if(flags & IW_POWER_MIN)
-                        pm_mask = IW_POWER_MAX;
+                    if(flags & IW_POWER_MIN) pm_mask = IW_POWER_MAX;
+
                     /* If we have been returned a MAX value, ask for the MIN */
-                    if(flags & IW_POWER_MAX)
-                        pm_mask = IW_POWER_MIN;
+                    if(flags & IW_POWER_MAX) pm_mask = IW_POWER_MIN;
+
                     /* If we have something to ask for... */
                     if(pm_mask) {
                         pm_mask |= pm_type;
@@ -1234,12 +1237,12 @@ print_pm_info(int        skfd,
  * Print the number of available transmit powers for the device
  */
 static int
-print_txpower_info(int        skfd,
+print_txpower_info(int       skfd,
                    char *    ifname,
                    char *    args[],        /* Command line args */
-                   int        count)        /* Args count */
+                   int       count)         /* Args count */
 {
-    struct iwreq        wrq;
+    struct iwreq           wrq;
     struct iw_range        range;
     int                    dbm;
     int                    mwatt;
@@ -1280,15 +1283,15 @@ print_txpower_info(int        skfd,
         /* Get current Transmit Power */
         if(iw_get_ext(skfd, ifname, SIOCGIWTXPOW, &wrq) >= 0) {
             printf("          Current Tx-Power");
+
             /* Disabled ? */
             if(wrq.u.txpower.disabled)
                 printf(":off\n\n");
             else {
                 /* Fixed ? */
-                if(wrq.u.txpower.fixed)
-                    printf("=");
-                else
-                    printf(":");
+                if(wrq.u.txpower.fixed) printf("=");
+                else                    printf(":");
+
                 /* Check for relative values */
                 if(wrq.u.txpower.flags & IW_TXPOW_RELATIVE) {
                     /* I just hate relative value, because they are
@@ -1299,11 +1302,11 @@ print_txpower_info(int        skfd,
                 }
                 else {
                     if(wrq.u.txpower.flags & IW_TXPOW_MWATT) {
-                        dbm = iw_mwatt2dbm(wrq.u.txpower.value);
+                        dbm   = iw_mwatt2dbm(wrq.u.txpower.value);
                         mwatt = wrq.u.txpower.value;
                     }
                     else {
-                        dbm = wrq.u.txpower.value;
+                        dbm   = wrq.u.txpower.value;
                         mwatt = iw_dbm2mwatt(wrq.u.txpower.value);
                     }
                     printf("%d dBm  \t(%d mW)\n\n", dbm, mwatt);
@@ -1321,13 +1324,13 @@ print_txpower_info(int        skfd,
  * Print one retry value
  */
 static int
-get_retry_value(int                skfd,
+get_retry_value(int               skfd,
                 char *            ifname,
                 struct iwreq *    pwrq,
-                int                flags,
+                int               flags,
                 char *            buffer,
-                int                buflen,
-                int                we_version_compiled)
+                int               buflen,
+                int               we_version_compiled)
 {
     /* Get Another retry value */
     pwrq->u.retry.flags = flags;
@@ -1348,32 +1351,29 @@ get_retry_value(int                skfd,
  * Print Power Management range for each type
  */
 static void
-print_retry_value_range(char *        name,
+print_retry_value_range(char *      name,
                         int         mask,
-                        int            iwr_flags,
-                        int            iwr_min,
-                        int            iwr_max,
-                        char *        buffer,
-                        int            buflen,
-                        int            we_version_compiled)
+                        int         iwr_flags,
+                        int         iwr_min,
+                        int         iwr_max,
+                        char *      buffer,
+                        int         buflen,
+                        int         we_version_compiled)
 {
     if(iwr_flags & mask) {
         int    flags = (iwr_flags & ~(IW_RETRY_MIN | IW_RETRY_MAX));
 
         /* Display if auto or fixed */
-        printf("%s %s ; ",
-                (iwr_flags & IW_POWER_MIN) ? "Auto " : "Fixed",
-                name);
+        printf("%s %s ; ", (iwr_flags & IW_POWER_MIN) ? "Auto " : "Fixed", name);
 
         /* Print the range */
         iw_print_retry_value(buffer, buflen,
-                iwr_min, flags | IW_POWER_MIN,
-                we_version_compiled);
+                             iwr_min, flags | IW_POWER_MIN,
+                             we_version_compiled);
+
         printf("%s\n                           ", buffer);
 
-        iw_print_retry_value(buffer, buflen,
-                iwr_max, flags | IW_POWER_MAX,
-                we_version_compiled);
+        iw_print_retry_value(buffer, buflen, iwr_max, flags | IW_POWER_MAX, we_version_compiled);
         printf("%s\n          ", buffer);
     }
 }
@@ -1384,12 +1384,12 @@ print_retry_value_range(char *        name,
  */
 static int
 print_retry_info(int        skfd,
-                 char *        ifname,
-                 char *        args[],        /* Command line args */
+                 char *     ifname,
+                 char *     args[],        /* Command line args */
                  int        count)        /* Args count */
 {
     struct iwreq        wrq;
-    struct iw_range        range;
+    struct iw_range     range;
     char                buffer[128];
 
     /* Avoid "Unused parameter" warning */
@@ -1397,23 +1397,24 @@ print_retry_info(int        skfd,
 
     /* Extract range info */
     if((iw_get_range_info(skfd, ifname, &range) < 0) ||
-            (range.we_version_compiled < 11))
-        fprintf(stderr, "%-8.16s  no retry limit/lifetime information.\n\n",
-                ifname);
+       (range.we_version_compiled < 11))
+        fprintf(stderr, "%-8.16s  no retry limit/lifetime information.\n\n", ifname);
     else {
         printf("%-8.16s  ", ifname);
 
         /* Display min/max limit availables */
-        print_retry_value_range("limit   ", IW_RETRY_LIMIT, range.retry_flags,
-                range.min_retry, range.max_retry,
-                buffer, sizeof(buffer),
-                range.we_version_compiled);
+        print_retry_value_range("limit   ", IW_RETRY_LIMIT,
+                                range.retry_flags,
+                                range.min_retry, range.max_retry,
+                                buffer, sizeof(buffer),
+                                range.we_version_compiled);
+
         /* Display min/max lifetime availables */
         print_retry_value_range("lifetime", IW_RETRY_LIFETIME,
-                range.r_time_flags,
-                range.min_r_time, range.max_r_time,
-                buffer, sizeof(buffer),
-                range.we_version_compiled);
+                                range.r_time_flags,
+                                range.min_r_time, range.max_r_time,
+                                buffer, sizeof(buffer),
+                                range.we_version_compiled);
 
         /* Get current retry settings */
         wrq.u.retry.flags = 0;
@@ -1434,8 +1435,8 @@ print_retry_info(int        skfd,
                 /* Let's check the value and its type */
                 if(wrq.u.retry.flags & IW_RETRY_TYPE) {
                     iw_print_retry_value(buffer, sizeof(buffer),
-                            wrq.u.retry.value, wrq.u.retry.flags,
-                            range.we_version_compiled);
+                                         wrq.u.retry.value, wrq.u.retry.flags,
+                                         range.we_version_compiled);
                     printf("%s\n                 ", buffer);
                 }
 
@@ -1490,7 +1491,7 @@ print_retry_info(int        skfd,
  * Exacly the same as the spy list, only with different IOCTL and messages
  */
 static int
-print_ap_info(int        skfd,
+print_ap_info(int       skfd,
               char *    ifname,
               char *    args[],        /* Command line args */
               int       count)        /* Args count */
@@ -1500,8 +1501,8 @@ print_ap_info(int        skfd,
                         sizeof(struct sockaddr)) * IW_MAX_AP];
     char                temp[128];
     struct sockaddr*    hwa;
-    struct iw_quality*    qual;
-    iwrange                range;
+    struct iw_quality*  qual;
+    iwrange             range;
     int                 has_range = 0;
     int                 has_qual = 0;
     int                 n;
@@ -1524,7 +1525,7 @@ print_ap_info(int        skfd,
     has_qual = wrq.u.data.flags;
 
     /* The two lists */
-    hwa = (struct sockaddr *) buffer;
+    hwa  = (struct sockaddr *) buffer;
     qual = (struct iw_quality *) (buffer + (sizeof(struct sockaddr) * n));
 
     /* Check if we have valid mac address type */
@@ -1538,10 +1539,8 @@ print_ap_info(int        skfd,
         has_range = 1;
 
     /* Display it */
-    if(n == 0)
-        printf("%-8.16s  No Peers/Access-Point in range\n", ifname);
-    else
-        printf("%-8.16s  Peers/Access-Points in range:\n", ifname);
+    if(n == 0)  printf("%-8.16s  No Peers/Access-Point in range\n", ifname);
+    else        printf("%-8.16s  Peers/Access-Points in range:\n", ifname);
 
     for(i = 0; i < n; i++) {
         if(has_qual) {
@@ -1567,19 +1566,19 @@ static const char *    event_capa_req[] =
     [SIOCGIWFREQ    - SIOCIWFIRST] = "New Frequency/Channel",
     [SIOCSIWMODE    - SIOCIWFIRST] = "Set Mode (kernel generated)",
     [SIOCGIWTHRSPY  - SIOCIWFIRST] = "Spy threshold crossed",
-    [SIOCGIWAP        - SIOCIWFIRST] = "New Access Point/Cell address - roaming",
+    [SIOCGIWAP      - SIOCIWFIRST] = "New Access Point/Cell address - roaming",
     [SIOCGIWSCAN    - SIOCIWFIRST] = "Scan request completed",
-    [SIOCSIWESSID    - SIOCIWFIRST] = "Set ESSID (kernel generated)",
-    [SIOCGIWESSID    - SIOCIWFIRST] = "New ESSID",
+    [SIOCSIWESSID   - SIOCIWFIRST] = "Set ESSID (kernel generated)",
+    [SIOCGIWESSID   - SIOCIWFIRST] = "New ESSID",
     [SIOCGIWRATE    - SIOCIWFIRST] = "New bit-rate",
     [SIOCSIWENCODE  - SIOCIWFIRST] = "Set Encoding (kernel generated)",
-    [SIOCGIWPOWER    - SIOCIWFIRST] = NULL,
+    [SIOCGIWPOWER   - SIOCIWFIRST] = NULL,
 };
 
 static const char *    event_capa_evt[] =
 {
-    [IWEVTXDROP        - IWEVFIRST] = "Tx packet dropped - retry exceeded",
-    [IWEVCUSTOM        - IWEVFIRST] = "Custom driver event",
+    [IWEVTXDROP     - IWEVFIRST] = "Tx packet dropped - retry exceeded",
+    [IWEVCUSTOM     - IWEVFIRST] = "Custom driver event",
     [IWEVREGISTERED - IWEVFIRST] = "Registered node",
     [IWEVEXPIRED    - IWEVFIRST] = "Expired node",
 };
@@ -1587,11 +1586,11 @@ static const char *    event_capa_evt[] =
 static const struct iwmask_name iw_scan_capa_name[] = {
     { IW_SCAN_CAPA_ESSID,        "ESSID" },
     { IW_SCAN_CAPA_BSSID,        "BSSID" },
-    { IW_SCAN_CAPA_CHANNEL,        "Channel" },
-    { IW_SCAN_CAPA_MODE,        "Mode" },
-    { IW_SCAN_CAPA_RATE,        "Rate" },
-    { IW_SCAN_CAPA_TYPE,        "Type" },
-    { IW_SCAN_CAPA_TIME,        "Time" },
+    { IW_SCAN_CAPA_CHANNEL,      "Channel" },
+    { IW_SCAN_CAPA_MODE,         "Mode" },
+    { IW_SCAN_CAPA_RATE,         "Rate" },
+    { IW_SCAN_CAPA_TYPE,         "Type" },
+    { IW_SCAN_CAPA_TIME,         "Time" },
 };
 #define    IW_SCAN_CAPA_NUM    IW_ARRAY_LEN(iw_scan_capa_name)
 
@@ -1600,10 +1599,10 @@ static const struct iwmask_name iw_scan_capa_name[] = {
  * Print the event capability for the device
  */
 static int
-print_event_capa_info(int        skfd,
+print_event_capa_info(int       skfd,
                       char *    ifname,
                       char *    args[],        /* Command line args */
-                      int        count)        /* Args count */
+                      int       count)        /* Args count */
 {
     struct iw_range    range;
     int                cmd;
@@ -1613,9 +1612,8 @@ print_event_capa_info(int        skfd,
 
     /* Extract range info */
     if((iw_get_range_info(skfd, ifname, &range) < 0) ||
-            (range.we_version_compiled < 10))
-        fprintf(stderr, "%-8.16s  no wireless event capability information.\n\n",
-                ifname);
+       (range.we_version_compiled < 10))
+        fprintf(stderr, "%-8.16s  no wireless event capability information.\n\n", ifname);
     else {
 #ifdef DEBUG
         /* Debugging ;-) */
@@ -1629,28 +1627,26 @@ print_event_capa_info(int        skfd,
         printf("%-8.16s  Wireless Events supported :\n", ifname);
 
         for(cmd = SIOCIWFIRST; cmd <= SIOCGIWPOWER; cmd++) {
-            int idx = IW_EVENT_CAPA_INDEX(cmd);
+            int idx  = IW_EVENT_CAPA_INDEX(cmd);
             int mask = IW_EVENT_CAPA_MASK(cmd);
+
             if(range.event_capa[idx] & mask)
-                printf("          0x%04X : %s\n",
-                        cmd, event_capa_req[cmd - SIOCIWFIRST]);
+                printf("          0x%04X : %s\n", cmd, event_capa_req[cmd - SIOCIWFIRST]);
         }
 
         for(cmd = IWEVFIRST; cmd <= IWEVEXPIRED; cmd++) {
             int idx = IW_EVENT_CAPA_INDEX(cmd);
             int mask = IW_EVENT_CAPA_MASK(cmd);
+
             if(range.event_capa[idx] & mask)
-                printf("          0x%04X : %s\n",
-                        cmd, event_capa_evt[cmd - IWEVFIRST]);
+                printf("          0x%04X : %s\n", cmd, event_capa_evt[cmd - IWEVFIRST]);
         }
         printf("\n");
 
         /* Add Scanning Capacity as a bonus, if available */
         if(range.scan_capa != 0) {
             printf("%-8.16s  Scanning capabilities :", ifname);
-            iw_print_mask_name(range.scan_capa,
-                    iw_scan_capa_name, IW_SCAN_CAPA_NUM,
-                    "\n\t\t- ");
+            iw_print_mask_name(range.scan_capa, iw_scan_capa_name, IW_SCAN_CAPA_NUM, "\n\t\t- ");
             printf("\n\n");
         }
     }
@@ -1664,13 +1660,13 @@ print_event_capa_info(int        skfd,
  * Print the authentication parameters for the device
  */
 static int
-print_auth_info(int        skfd,
+print_auth_info(int       skfd,
                 char *    ifname,
                 char *    args[],        /* Command line args */
-                int        count)        /* Args count */
+                int       count)        /* Args count */
 {
     struct iwreq        wrq;
-    struct iw_range        range;
+    struct iw_range     range;
     unsigned int        k;
 
     /* Avoid "Unused parameter" warning */
@@ -1678,7 +1674,7 @@ print_auth_info(int        skfd,
 
     /* Extract range info */
     if((iw_get_range_info(skfd, ifname, &range) < 0) ||
-            (range.we_version_compiled < 18))
+       (range.we_version_compiled < 18))
         fprintf(stderr, "%-8.16s  no authentication information.\n\n", ifname);
     else {
         /* Print WPA/802.1x/802.11i security parameters */
@@ -1688,21 +1684,21 @@ print_auth_info(int        skfd,
         else {
             /* Display advanced encryption capabilities */
             printf("%-8.16s  Authentication capabilities :", ifname);
-            iw_print_mask_name(range.enc_capa,
-                    iw_auth_capa_name, IW_AUTH_CAPA_NUM,
-                    "\n\t\t");
+            iw_print_mask_name(range.enc_capa, iw_auth_capa_name, IW_AUTH_CAPA_NUM, "\n\t\t");
             printf("\n");
 
             /* Extract all auth settings */
             for(k = 0; k < IW_AUTH_SETTINGS_NUM; k++) {
                 wrq.u.param.flags = iw_auth_settings[k].value;
+
                 if(iw_get_ext(skfd, ifname, SIOCGIWAUTH, &wrq) >= 0) {
                     printf("          Current %s :", iw_auth_settings[k].label);
+
                     if(iw_auth_settings[k].names != NULL)
                         iw_print_mask_name(wrq.u.param.value,
-                                iw_auth_settings[k].names,
-                                iw_auth_settings[k].num_names,
-                                "\n\t\t");
+                                           iw_auth_settings[k].names,
+                                           iw_auth_settings[k].num_names,
+                                           "\n\t\t");
                     else
                         printf((wrq.u.param.value) ? " yes" : " no");
 
@@ -1721,13 +1717,13 @@ print_auth_info(int        skfd,
  * Print all the available wpa keys for the device
  */
 static int
-print_wpakeys_info(int        skfd,
+print_wpakeys_info(int       skfd,
                    char *    ifname,
                    char *    args[],        /* Command line args */
-                   int        count)        /* Args count */
+                   int       count)        /* Args count */
 {
     struct iwreq        wrq;
-    struct iw_range        range;
+    struct iw_range     range;
     unsigned char       extbuf[IW_EXTKEY_SIZE];
     unsigned int        k;
     char                buffer[128];
@@ -1745,10 +1741,12 @@ print_wpakeys_info(int        skfd,
         fprintf(stderr, "%-8.16s  no wpa key information.\n\n", ifname);
     else {
         printf("%-8.16s  ", ifname);
+
         /* Print key sizes */
         if((range.num_encoding_sizes > 0) &&
            (range.num_encoding_sizes < IW_MAX_ENCODING_SIZES)) {
             printf("%d key sizes : %d", range.num_encoding_sizes, range.encoding_size[0] * 8);
+
             /* Print them all */
             for(k = 1; k < range.num_encoding_sizes; k++)
                 printf(", %d", range.encoding_size[k] * 8);
@@ -1779,8 +1777,7 @@ print_wpakeys_info(int        skfd,
                 printf("\t\t[%d]: off\n", k);
             else {
                 /* Display the key */
-                iw_print_key(buffer, sizeof(buffer),
-                        extinfo->key, extinfo->key_len, wrq.u.data.flags);
+                iw_print_key(buffer, sizeof(buffer), extinfo->key, extinfo->key_len, wrq.u.data.flags);
                 printf("\t\t[%d]: %s", k, buffer);
 
                 /* Key size */
@@ -1807,8 +1804,8 @@ print_wpakeys_info(int        skfd,
 
         /* Print current key index and mode */
         wrq.u.data.pointer = (caddr_t) extbuf;
-        wrq.u.data.length = IW_EXTKEY_SIZE;
-        wrq.u.data.flags = 0;    /* Set index to zero to get current */
+        wrq.u.data.length  = IW_EXTKEY_SIZE;
+        wrq.u.data.flags   = 0;    /* Set index to zero to get current */
 
         if(iw_get_ext(skfd, ifname, SIOCGIWENCODEEXT, &wrq) >= 0) {
             /* Note : if above fails, we have already printed an error
@@ -1832,10 +1829,10 @@ print_wpakeys_info(int        skfd,
  * Note : indentation is broken. We need to fix that.
  */
 static int
-print_gen_ie_info(int        skfd,
+print_gen_ie_info(int       skfd,
                   char *    ifname,
                   char *    args[],        /* Command line args */
-                  int        count)        /* Args count */
+                  int       count)        /* Args count */
 {
     struct iwreq        wrq;
     unsigned char       buf[IW_GENERIC_IE_MAX];
@@ -1844,8 +1841,8 @@ print_gen_ie_info(int        skfd,
     args = args; count = count;
 
     wrq.u.data.pointer = (caddr_t)buf;
-    wrq.u.data.length = IW_GENERIC_IE_MAX;
-    wrq.u.data.flags = 0;
+    wrq.u.data.length  = IW_GENERIC_IE_MAX;
+    wrq.u.data.flags   = 0;
 
     if(iw_get_ext(skfd, ifname, SIOCGIWGENIE, &wrq) < 0)
         fprintf(stderr, "%-8.16s  no generic IE (%s).\n\n",
@@ -1869,8 +1866,8 @@ print_gen_ie_info(int        skfd,
  */
 static int
 print_modul_info(int        skfd,
-                 char *        ifname,
-                 char *        args[],        /* Command line args */
+                 char *     ifname,
+                 char *     args[],        /* Command line args */
                  int        count)        /* Args count */
 {
     struct iwreq        wrq;
@@ -1937,31 +1934,31 @@ print_modul_info(int        skfd,
  */
 typedef struct iwlist_entry {
     const char *        cmd;        /* Command line shorthand */
-    iw_enum_handler        fn;            /* Subroutine */
-    int                    max_count;
-    const char *        argsname;    /* Args as human readable string */
+    iw_enum_handler     fn;         /* Subroutine */
+    int                 max_count;
+    const char *        argsname;   /* Args as human readable string */
 } iwlist_cmd;
 
 static const struct iwlist_entry iwlist_cmds[] = {
     { "scanning",        print_scanning_info,    -1, "[essid NNN] [last]" },
-    { "frequency",        print_freq_info,    0, NULL },
-    { "channel",        print_freq_info,    0, NULL },
-    { "bitrate",        print_bitrate_info,    0, NULL },
+    { "frequency",       print_freq_info,       0, NULL },
+    { "channel",         print_freq_info,       0, NULL },
+    { "bitrate",         print_bitrate_info,    0, NULL },
     { "rate",            print_bitrate_info,    0, NULL },
-    { "encryption",        print_keys_info,    0, NULL },
-    { "keys",            print_keys_info,    0, NULL },
-    { "power",            print_pm_info,        0, NULL },
+    { "encryption",      print_keys_info,       0, NULL },
+    { "keys",            print_keys_info,       0, NULL },
+    { "power",           print_pm_info,         0, NULL },
 #ifndef WE_ESSENTIAL
-    { "txpower",        print_txpower_info,    0, NULL },
-    { "retry",            print_retry_info,    0, NULL },
-    { "ap",                print_ap_info,        0, NULL },
-    { "accesspoints",    print_ap_info,        0, NULL },
-    { "peers",            print_ap_info,        0, NULL },
-    { "event",            print_event_capa_info,    0, NULL },
-    { "auth",            print_auth_info,    0, NULL },
-    { "wpakeys",        print_wpakeys_info,    0, NULL },
-    { "genie",            print_gen_ie_info,    0, NULL },
-    { "modulation",        print_modul_info,    0, NULL },
+    { "txpower",         print_txpower_info,    0, NULL },
+    { "retry",           print_retry_info,      0, NULL },
+    { "ap",              print_ap_info,         0, NULL },
+    { "accesspoints",    print_ap_info,         0, NULL },
+    { "peers",           print_ap_info,         0, NULL },
+    { "event",           print_event_capa_info, 0, NULL },
+    { "auth",            print_auth_info,       0, NULL },
+    { "wpakeys",         print_wpakeys_info,    0, NULL },
+    { "genie",           print_gen_ie_info,     0, NULL },
+    { "modulation",      print_modul_info,      0, NULL },
 #endif    /* WE_ESSENTIAL */
     { NULL, NULL, 0, 0 },
 };
@@ -2043,8 +2040,8 @@ iwlist_main(int argc, char **argv)
     int     skfd;            /* generic raw socket desc.    */
     char    *dev;            /* device name            */
     char    *cmd;            /* command            */
-    char    **args;            /* Command arguments */
-    int     count;            /* Number of arguments */
+    char    **args;          /* Command arguments */
+    int     count;           /* Number of arguments */
     int     goterr = 0;
 
     const iwlist_cmd *iwcmd;

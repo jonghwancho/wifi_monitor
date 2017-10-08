@@ -1,7 +1,7 @@
-#ifndef IW_LIST_H
-#define IW_LIST_H
+#ifndef WIFI_MONITOR_IW_LIST_H
+#define WIFI_MONITOR_IW_LIST_H
 
-#include "iw_lib-private.h"		/* Private header */
+#include "wifi_monitor_iw.h"		/* Private header */
 #include <sys/time.h>
 
 #ifdef __cplusplus
